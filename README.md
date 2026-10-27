@@ -1,59 +1,207 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Projeto Aplicado - Práticas de Mercado
 
-## About Laravel
+## Sobre o Projeto
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Este projeto foi desenvolvido como atividade da disciplina **Projeto Aplicado: Práticas de Mercado**, com foco em práticas de desenvolvimento seguro, hospedagem em nuvem e automação de deploy.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+A aplicação consiste em um sistema Web desenvolvido em Laravel contendo:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Login de usuários
+- Área interna protegida
+- Logout
+- Controle de sessão
+- Hospedagem em ambiente Cloud
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Endereços do Projeto
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Aplicação
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+https://wendelsilvapos.duckdns.org
 
-## Agentic Development
+### Repositório GitHub
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+https://github.com/wendelsilvapos2/projeto-praticas-mercado
 
-```bash
-composer require laravel/boost --dev
+---
 
-php artisan boost:install
+## Tecnologias Utilizadas
+
+- Laravel 13
+- PHP 8.5
+- SQLite
+- Nginx
+- Ubuntu Server
+- AWS EC2
+- GitHub Actions
+- DuckDNS
+- Fail2Ban
+- Let's Encrypt SSL
+
+---
+
+## Funcionalidades
+
+### Login
+
+Permite autenticação de usuários utilizando e-mail e senha.
+
+### Área Protegida
+
+Acesso restrito apenas para usuários autenticados.
+
+### Logout
+
+Encerramento seguro da sessão do usuário.
+
+---
+
+## Infraestrutura
+
+### Servidor
+
+- AWS EC2
+- Ubuntu Server
+
+### Servidor Web
+
+- Nginx
+
+### Segurança
+
+- Acesso SSH por chave criptográfica
+- Fail2Ban configurado na porta SSH
+- SSL/TLS com Let's Encrypt
+- Redirecionamento HTTP → HTTPS
+
+---
+
+## Integração Contínua e Entrega Contínua (CI/CD)
+
+O projeto utiliza GitHub Actions para automatizar o processo de deploy.
+
+Fluxo:
+
+Desenvolvimento Local
+
+↓
+
+GitHub
+
+↓
+
+GitHub Actions
+
+↓
+
+Servidor EC2
+
+↓
+
+Produção
+
+---
+
+# OWASP Top 10 - Controles de Segurança Implementados
+
+## A01 - Broken Access Control (Falhas de Controle de Acesso)
+
+As rotas protegidas da aplicação utilizam o middleware de autenticação do Laravel.
+
+Somente usuários autenticados conseguem acessar páginas internas.
+
+Exemplo:
+
+```php
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard');
+});
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Mitigações Implementadas
 
-## Contributing
+- Middleware auth
+- Controle de sessão
+- Redirecionamento para login
+- Restrição de acesso a áreas protegidas
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## A02 - Cryptographic Failures (Falhas Criptográficas)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+As senhas não são armazenadas em texto puro.
 
-## Security Vulnerabilities
+O Laravel utiliza bcrypt para armazenamento seguro das credenciais.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Exemplo:
 
-## License
+```php
+Hash::make($password);
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Mitigações Implementadas
 
+- Senhas criptografadas
+- HTTPS com SSL/TLS
+- Sessões protegidas
+
+---
+
+## A03 - Injection (Injeção)
+
+A aplicação utiliza validação de entrada e Eloquent ORM.
+
+Exemplo:
+
+```php
+$request->validate([
+    'email' => 'required|email',
+    'password' => 'required'
+]);
+```
+
+### Mitigações Implementadas
+
+- Validação dos dados enviados pelo usuário
+- Eloquent ORM
+- Proteção contra SQL Injection
+- Sanitização das entradas
+
+---
+
+## Segurança Implementada no Projeto
+
+- HTTPS
+- Fail2Ban
+- Chave SSH
+- Middleware de autenticação
+- Controle de sessão
+- Senhas criptografadas
+- Proteção contra SQL Injection
+- GitHub Secrets
+- CI/CD automatizado
+
+---
+
+## Estrutura do Projeto
+
+```text
+app/
+bootstrap/
+config/
+database/
+public/
+resources/
+routes/
+storage/
+```
+
+---
+
+## Autor
+
+Wendel Silva
+
+Projeto desenvolvido para fins acadêmicos na disciplina Projeto Aplicado: Práticas de Mercado.
